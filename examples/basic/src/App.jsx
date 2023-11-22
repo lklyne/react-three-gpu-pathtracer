@@ -47,14 +47,23 @@ function Thing() {
     <>
       <OrbitControls onChange={() => reset()} makeDefault />
       <PerspectiveCamera position={[5, 4.5, -5]} fov={40} makeDefault />
-      <group>
+      <mesh position={[0, 0, 0]} scale={[1, 1, 1]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshPhysicalMaterial color="white" />
+      </mesh>
+      <mesh position={[0, -1, 0]} scale={[10, 1, 10]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshPhysicalMaterial color="gray" />
+      </mesh>
+      {/* <group>
         <Bounds fit clip observe damping={6} margin={1.7}>
           <group position={[0.2, -1, 0]}>
             <Model rotation-y={Math.PI} position={[-0.3, 0, 0]} scale={5} />
           </group>
         </Bounds>
+
         <Floor />
-      </group>
+      </group> */}
     </>
   )
 }
@@ -88,6 +97,7 @@ export default function App() {
             enabled={opts.Rendering_Enabled}
             backgroundIntensity={opts.Environment_Intensity}
             backgroundBlur={opts.Environment_Blur}
+            frames={100}
           >
             <Environment preset={opts.Environment_Preset} background={opts.Environment_Visible} />
             <Thing />

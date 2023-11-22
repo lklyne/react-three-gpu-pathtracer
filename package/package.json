@@ -58,7 +58,7 @@
     "three": ">=0.149"
   },
   "dependencies": {
-    "three-gpu-pathtracer": "^0.0.13"
+    "three-gpu-pathtracer": "^0.0.16"
   },
   "babel": {
     "presets": [
