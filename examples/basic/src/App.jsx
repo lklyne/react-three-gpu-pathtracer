@@ -39,10 +39,10 @@ function Thing() {
     <>
       <OrbitControls onChange={() => reset()} makeDefault enableDamping={false} />
       <PerspectiveCamera position={[0, 10, 0]} fov={40} makeDefault />
-      <mesh position={[0, 0, 0]} scale={[1, 1, 1]}>
+      {/* <mesh position={[0, 0, 0]} scale={[1, 1, 1]}>
         <boxGeometry args={[1, 1, 1]} />
         <meshPhysicalMaterial color="white" />
-      </mesh>
+      </mesh> */}
       <mesh position={[0, -1, 0]} scale={[10, 1, 10]}>
         <boxGeometry args={[1, 1, 1]} />
         <meshPhysicalMaterial color="#a06464" />
@@ -71,7 +71,7 @@ export default function App() {
           toneMapping: ACESFilmicToneMapping,
         }}
       >
-        {!opts.Environment_Visible && <color attach="background" args={['#ffdcb5']} />}
+        {!opts.Environment_Visible && <color attach="background" args={['#000']} />}
 
         <Suspense fallback={null}>
           <Pathtracer
@@ -82,7 +82,7 @@ export default function App() {
             enabled={opts.Rendering_Enabled}
             backgroundIntensity={opts.Environment_Intensity}
             backgroundBlur={opts.Environment_Blur}
-            frames={100}
+            frames={24}
           >
             <Lights />
             <Environment preset={opts.Environment_Preset} background={opts.Environment_Visible} />

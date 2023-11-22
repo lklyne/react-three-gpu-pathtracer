@@ -52,7 +52,7 @@ export default function Controls() {
         label: 'Preset',
       },
       Environment_Intensity: {
-        value: 1,
+        value: 0,
         max: 10,
         min: 0,
         step: 0.01,
