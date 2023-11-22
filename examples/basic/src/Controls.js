@@ -27,8 +27,8 @@ export default function Controls() {
       },
       Rendering_Tiles: {
         value: {
-          x: 2,
-          y: 2,
+          x: 1,
+          y: 1,
         },
         max: 20,
         min: 1,

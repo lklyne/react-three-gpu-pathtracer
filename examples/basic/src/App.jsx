@@ -1,5 +1,14 @@
-import { Canvas, useFrame } from '@react-three/fiber'
-import { Environment, OrbitControls, Stats, Bounds, useTexture, Circle, PerspectiveCamera } from '@react-three/drei'
+import { extend, Canvas, useFrame } from '@react-three/fiber'
+import {
+  Environment,
+  OrbitControls,
+  SpotLight,
+  Stats,
+  Bounds,
+  useTexture,
+  Circle,
+  PerspectiveCamera,
+} from '@react-three/drei'
 import { Suspense, useLayoutEffect, useRef, useState } from 'react'
 import { button, folder, Leva, useControls } from 'leva'
 import { Pathtracer, usePathtracer, usePathtracedFrames } from '@react-three/gpu-pathtracer'
@@ -9,6 +18,9 @@ import Controls from './Controls'
 import Tag from './Tag'
 import Model from './Model'
 import { ACESFilmicToneMapping, sRGBEncoding } from 'three'
+
+import { PhysicalSpotLight } from 'three-gpu-pathtracer'
+extend({ PhysicalSpotLight })
 
 function Floor() {
   const [aoMap, diffMap, norMap, roughMap] = useTexture([
@@ -45,7 +57,7 @@ function Thing() {
 
   return (
     <>
-      <OrbitControls onChange={() => reset()} makeDefault />
+      <OrbitControls onChange={() => reset()} makeDefault enableDamping={false} />
       <PerspectiveCamera position={[5, 4.5, -5]} fov={40} makeDefault />
       <mesh position={[0, 0, 0]} scale={[1, 1, 1]}>
         <boxGeometry args={[1, 1, 1]} />
@@ -53,7 +65,7 @@ function Thing() {
       </mesh>
       <mesh position={[0, -1, 0]} scale={[10, 1, 10]}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshPhysicalMaterial color="gray" />
+        <meshPhysicalMaterial color="#a06464" />
       </mesh>
       {/* <group>
         <Bounds fit clip observe damping={6} margin={1.7}>
@@ -64,6 +76,15 @@ function Thing() {
 
         <Floor />
       </group> */}
+    </>
+  )
+}
+
+function Scene() {
+  return (
+    <>
+      <SpotLight intensity={1} angle={Math.PI / 8} position={[10, 10, 10]} castShadow />
+      {/* Other scene objects */}
     </>
   )
 }
@@ -99,6 +120,17 @@ export default function App() {
             backgroundBlur={opts.Environment_Blur}
             frames={100}
           >
+            <physicalSpotLight
+              color={0xffffff}
+              position={[0, 6, 4]}
+              angle={Math.PI / 4.5}
+              decay={0}
+              penumbra={1.0}
+              distance={0.0}
+              intensity={20.0}
+              radius={0.5}
+              castShadow
+            />
             <Environment preset={opts.Environment_Preset} background={opts.Environment_Visible} />
             <Thing />
             <UI infoRef={infoRef} />
