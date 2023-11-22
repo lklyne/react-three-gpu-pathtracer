@@ -1,4 +1,4 @@
-import { extend, Canvas, useFrame } from '@react-three/fiber'
+import { extend, useThree, Canvas, useFrame } from '@react-three/fiber'
 import {
   Environment,
   OrbitControls,
@@ -9,35 +9,15 @@ import {
   Circle,
   PerspectiveCamera,
 } from '@react-three/drei'
-import { Suspense, useLayoutEffect, useRef, useState } from 'react'
+import { Suspense, useLayoutEffect, useEffect, useRef, useState } from 'react'
 import { button, folder, Leva, useControls } from 'leva'
 import { Pathtracer, usePathtracer, usePathtracedFrames } from '@react-three/gpu-pathtracer'
+import * as THREE from 'three'
 
 import Controls from './Controls'
+import Lights from './Lights'
 
-import Tag from './Tag'
-import Model from './Model'
 import { ACESFilmicToneMapping, sRGBEncoding } from 'three'
-
-import { PhysicalSpotLight } from 'three-gpu-pathtracer'
-extend({ PhysicalSpotLight })
-
-function Floor() {
-  const [aoMap, diffMap, norMap, roughMap] = useTexture([
-    '/textures/wood_cabinet_worn_long_ao_2k.jpg',
-    '/textures/wood_cabinet_worn_long_diff_2k.jpg',
-    '/textures/wood_cabinet_worn_long_nor_gl_2k.jpg',
-    '/textures/wood_cabinet_worn_long_rough_2k.jpg',
-  ])
-
-  return (
-    <>
-      <Circle args={[4, 128]} position={[0, -1, 0]} rotation-x={-Math.PI / 2}>
-        <meshPhysicalMaterial map={diffMap} aoMap={aoMap} roughnessMap={roughMap} normalMap={norMap} roughness={0.5} />
-      </Circle>
-    </>
-  )
-}
 
 function UI({ infoRef }) {
   const { renderer } = usePathtracer()
@@ -58,7 +38,7 @@ function Thing() {
   return (
     <>
       <OrbitControls onChange={() => reset()} makeDefault enableDamping={false} />
-      <PerspectiveCamera position={[5, 4.5, -5]} fov={40} makeDefault />
+      <PerspectiveCamera position={[0, 10, 0]} fov={40} makeDefault />
       <mesh position={[0, 0, 0]} scale={[1, 1, 1]}>
         <boxGeometry args={[1, 1, 1]} />
         <meshPhysicalMaterial color="white" />
@@ -67,24 +47,6 @@ function Thing() {
         <boxGeometry args={[1, 1, 1]} />
         <meshPhysicalMaterial color="#a06464" />
       </mesh>
-      {/* <group>
-        <Bounds fit clip observe damping={6} margin={1.7}>
-          <group position={[0.2, -1, 0]}>
-            <Model rotation-y={Math.PI} position={[-0.3, 0, 0]} scale={5} />
-          </group>
-        </Bounds>
-
-        <Floor />
-      </group> */}
-    </>
-  )
-}
-
-function Scene() {
-  return (
-    <>
-      <SpotLight intensity={1} angle={Math.PI / 8} position={[10, 10, 10]} castShadow />
-      {/* Other scene objects */}
     </>
   )
 }
@@ -92,6 +54,8 @@ function Scene() {
 export default function App() {
   const infoRef = useRef()
   const opts = Controls()
+
+  const positionRef = useRef()
 
   return (
     <>
@@ -120,17 +84,7 @@ export default function App() {
             backgroundBlur={opts.Environment_Blur}
             frames={100}
           >
-            <physicalSpotLight
-              color={0xffffff}
-              position={[0, 6, 4]}
-              angle={Math.PI / 4.5}
-              decay={0}
-              penumbra={1.0}
-              distance={0.0}
-              intensity={20.0}
-              radius={0.5}
-              castShadow
-            />
+            <Lights />
             <Environment preset={opts.Environment_Preset} background={opts.Environment_Visible} />
             <Thing />
             <UI infoRef={infoRef} />
@@ -138,7 +92,7 @@ export default function App() {
         </Suspense>
       </Canvas>
       <Stats />
-      <Tag />
+      {/* <Tag /> */}
       <div className="info" ref={infoRef}>
         <p>0 frames</p>
         <p>0 samples</p>
